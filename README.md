@@ -45,3 +45,7 @@ Read a string in the minibuffer with from-to is auto.
 (setq microsoft-translator-client-secret "xxxxxxxxxxxxxxxxxxxxxxxx")
 (setq microsoft-translator-use-language-by-auto-translate "Japanese")
 ```
+
+## License
+
+GPLv3
