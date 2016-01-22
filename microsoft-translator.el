@@ -200,16 +200,17 @@ query parameter in HTTP requests.")
              ("category" . "general"))
    :parser 'buffer-string
    :success (function* (lambda (&key data &allow-other-keys)
-                         (when data
-                           (with-current-buffer (get-buffer-create microsoft-translator-buffer-name)
-                             (erase-buffer)
-                             (insert (microsoft-translator--header-title from to))
-                             (put-text-property (point-min) (point-at-eol) 'face 'microsoft-translator-header-title)
-                             (insert (format "\n\n%s\n\n%s" translate-text (substring data 2 (1- (length data)))))
-                             (setq buffer-read-only t)
-                             (pop-to-buffer (current-buffer))
-                             (goto-char (point-min))))))
-   :error (function* (error "translating error"))))
+                         (let ((ret-text (decode-coding-string data 'utf-8-with-signature)))
+                           (when data
+                             (with-current-buffer (get-buffer-create microsoft-translator-buffer-name)
+                               (erase-buffer)
+                               (insert (microsoft-translator--header-title from to))
+                               (put-text-property (point-min) (point-at-eol) 'face 'microsoft-translator-header-title)
+                               (insert (format "\n\n%s\n\n%s" translate-text (substring ret-text 1 (1- (length ret-text)))))
+                               (setq buffer-read-only t)
+                               (pop-to-buffer (current-buffer))
+                               (goto-char (point-min))))))))
+  :error (function* (error "translating error")))
 
 (defun microsoft-translator--completing-read (prompt default-input)
     (completing-read prompt
